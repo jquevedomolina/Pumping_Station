@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Estación de Bombeo</title>
+    <style>
+        @page {
+            size: legal;
+            margin: 1cm;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2c3e50;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .project-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2980b9;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+        td {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .result-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid #3498db;
+        }
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .result-unit {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 0.85em;
+            color: #7f8c8d;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <!-- Espacio reservado para logo -->
+        <div style="font-size: 1.5em; font-weight: bold; color: #3498db;">Sistema de Bombeo</div>
+    </div>
+    
+    <div class="header">
+        <h1>Reporte Técnico de Estación de Bombeo</h1>
+        <div class="project-info">
+            <div>
+                <strong>Proyecto:</strong> {{ data.project_name or 'N/A' }}
+            </div>
+            <div>
+                <strong>Ubicación:</strong> {{ data.project_location or 'N/A' }}
+            </div>
+            <div>
+                <strong>Fecha:</strong> {{ current_date }}
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Parámetros de Entrada</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Parámetro</th>
+                    <th>Valor</th>
+                    <th>Unidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Altura Geométrica</td>
+                    <td>{{ data.geometric_height }}</td>
+                    <td>{{ data.geometric_height_unit }}</td>
+                </tr>
+                <tr>
+                    <td>Caudal de Diseño</td>
+                    <td>{{ data.flow_rate }}</td>
+                    <td>{{ data.flow_rate_unit }}</td>
+                </tr>
+                <tr>
+                    <td>Longitud de Tubería</td>
+                    <td>{{ data.pipe_length }}</td>
+                    <td>{{ data.pipe_length_unit }}</td>
+                </tr>
+                <tr>
+                    <td>Diámetro de Tubería</td>
+                    <td>{{ data.pipe_diameter }}</td>
+                    <td>{{ data.pipe_diameter_unit }}</td>
+                </tr>
+                <tr>
+                    <td>Material de Tubería</td>
+                    <td colspan="2">{{ data.pipe_material }}</td>
+                </tr>
+                <tr>
+                    <td>Eficiencia de Bomba</td>
+                    <td colspan="2">{{ (data.pump_efficiency * 100)|round(1) }}%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Resultados del Cálculo</div>
+        <div class="results-grid">
+            <div class="result-card">
+                <div>Altura Total Dinámica</div>
+                <div class="result-value">{{ results.total_head }} <span class="result-unit">m</span></div>
+            </div>
+            <div class="result-card">
+                <div>Pérdidas por Fricción</div>
+                <div class="result-value">{{ results.friction_head_loss }} <span class="result-unit">m</span></div>
+            </div>
+            <div class="result-card">
+                <div>Pérdidas Menores</div>
+                <div class="result-value">{{ results.minor_head_loss }} <span class="result-unit">m</span></div>
+            </div>
+            <div class="result-card">
+                <div>Potencia Requerida</div>
+                <div class="result-value">{{ results.power_kw }} <span class="result-unit">kW</span></div>
+                <div>{{ results.power_hp }} <span class="result-unit">HP</span></div>
+            </div>
+            <div class="result-card">
+                <div>Velocidad del Flujo</div>
+                <div class="result-value">{{ results.velocity }} <span class="result-unit">m/s</span></div>
+            </div>
+            <div class="result-card">
+                <div>Número de Reynolds</div>
+                <div class="result-value">{{ results.reynolds|round(0) }}</div>
+            </div>
+        </div>
+    </div>
+
+    {% if chart_image %}
+    <div class="section">
+        <div class="section-title">Curva Característica de la Bomba</div>
+        <div style="text-align: center; margin: 20px 0;">
+            <img src="{{ chart_image }}" alt="Curva de Bomba" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="section-title">Detalles Adicionales</div>
+        <table>
+            <tr>
+                <th>Parámetro</th>
+                <th>Valor</th>
+            </tr>
+            <tr>
+                <td>Factor de Fricción</td>
+                <td>{{ results.friction_factor }}</td>
+            </tr>
+            <tr>
+                <td>Ecuación de la Curva de Bomba</td>
+                <td>{{ results.curve_equation }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        Reporte generado automáticamente por el Sistema de Cálculo de Estaciones de Bombeo<br>
+        Todos los cálculos basados en la ecuación de Darcy-Weisbach y estándares de la industria
+    </div>
+</body>
+</html>

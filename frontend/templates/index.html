@@ -10,13 +10,28 @@
 </head>
 <body>
     <div class="modern-container">
-        <!-- Header -->
-        <div class="modern-header">
-            <h1 class="modern-title">
-                <i class="fas fa-tint me-3"></i>
-                Calculadora de Estación de Bombeo
-            </h1>
-            <p class="modern-subtitle">Herramienta profesional para cálculos hidráulicos precisos</p>
+        <!-- Header with VMS Branding -->
+        <div class="modern-header" style="background: linear-gradient(135deg, #00BFFF 0%, #0099CC 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 8px 25px rgba(0,191,255,0.3);">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div style="text-align: left; margin-bottom: 15px;">
+                        <h1 style="margin: 0; font-size: 32px; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">VMS HYDRAULICS, S.A.</h1>
+                        <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9; color: white;">Válvulas, mediciones y soluciones hidráulicas</p>
+                    </div>
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 600;">
+                        <i class="fas fa-tint me-3"></i>
+                        Calculadora de Estación de Bombeo
+                    </h1>
+                    <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9;">Herramienta profesional para cálculos hidráulicos precisos</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; backdrop-filter: blur(10px);">
+                        <div style="font-size: 12px; opacity: 0.8; margin-bottom: 5px;">Versión del Sistema</div>
+                        <div style="font-size: 18px; font-weight: bold;">v2.0 Pro</div>
+                        <div style="font-size: 10px; opacity: 0.7; margin-top: 5px;">Certificado ISO 9001</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row">
@@ -222,6 +237,19 @@
                         <div class="modern-equation">
                             <strong>Ecuación de la Curva:</strong>
                             <div id="curve_equation">H = -</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #00BFFF, #0099CC); border-radius: 10px;">
+                        <h4 style="color: white; margin-bottom: 15px; font-weight: bold;">Generar Reporte Profesional</h4>
+                        <p style="color: white; margin-bottom: 20px; font-size: 14px;">Reporte técnico completo con gráficas y análisis detallado</p>
+                        <button id="generate-pdf" class="btn" style="background: white; color: #00BFFF; font-weight: bold; padding: 12px 30px; border: none; border-radius: 25px; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)'">
+                            📄 Generar Reporte PDF
+                        </button>
+                        <div style="margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.8);">
+                            ✓ Incluye gráficas profesionales<br>
+                            ✓ Análisis técnico detallado<br>
+                            ✓ Formato legal (8.5" x 14")
                         </div>
                     </div>
                 </div>

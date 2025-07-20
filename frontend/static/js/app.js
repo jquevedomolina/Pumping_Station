@@ -297,4 +297,55 @@ document.addEventListener('DOMContentLoaded', function() {
             this.parentElement.style.transform = 'translateY(0)';
         });
     });
+    
+    // Event listener for PDF generation button
+    document.getElementById('generate-pdf').addEventListener('click', async () => {
+        console.log('PDF button clicked');
+        
+        const formData = {
+            project_name: document.getElementById('project_name').value,
+            project_location: document.getElementById('project_location').value,
+            geometric_height: parseFloat(document.getElementById('geometric_height').value),
+            geometric_height_unit: document.getElementById('geometric_height_unit').value,
+            flow_rate: parseFloat(document.getElementById('flow_rate').value),
+            flow_rate_unit: document.getElementById('flow_rate_unit').value,
+            pipe_length: parseFloat(document.getElementById('pipe_length').value),
+            pipe_length_unit: document.getElementById('pipe_length_unit').value,
+            pipe_diameter: parseFloat(document.getElementById('pipe_diameter').value),
+            pipe_diameter_unit: document.getElementById('pipe_diameter_unit').value,
+            pipe_material: document.getElementById('pipe_material').value,
+            pump_efficiency: parseFloat(document.getElementById('pump_efficiency').value) / 100,
+
+            // Accesorios
+            valve_gate: parseInt(document.getElementById('valve_gate').value) || 0,
+            valve_butterfly: parseInt(document.getElementById('valve_butterfly').value) || 0,
+            valve_check: parseInt(document.getElementById('valve_check').value) || 0,
+            valve_globe: parseInt(document.getElementById('valve_globe').value) || 0,
+            elbow_90: parseInt(document.getElementById('elbow_90').value) || 0,
+            elbow_45: parseInt(document.getElementById('elbow_45').value) || 0
+        };
+        console.log('Form data:', formData);
+        
+        try {
+            const response = await fetch('/generate-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) throw new Error('Error en generación de PDF');
+            
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'reporte_bombeo.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error generando PDF: ' + error.message);
+        }
+    });
 });
