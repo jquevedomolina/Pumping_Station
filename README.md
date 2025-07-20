@@ -7,7 +7,7 @@ Aplicación web para calcular parámetros de estaciones de bombeo usando la ecua
   - Altura dinámica total (Total Dynamic Head)
   - Pérdidas por fricción
   - Potencia requerida (kW y HP)
-- **Materiales de tubería soportados**: PVC, acero, cobre, concreto
+- **Materiales de tubería soportados**: PVC, acero, cobre, concreto, hierro dúctil
 - **Interfaz moderna y responsiva** con Bootstrap 5
 - **Visualización gráfica** de la curva de la bomba y punto de operación
 - **Unidades abreviadas** (m, ft, km, in, mm) para mejor experiencia de usuario
