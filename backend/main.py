@@ -65,10 +65,11 @@ def calculate_pumping_station(data: PumpingStationInput):
     
     # Get roughness coefficient based on material
     roughness = {
-        "PVC": 0.0015,
-        "steel": 0.045,
-        "copper": 0.0015,
-        "concrete": 0.3
+        "pvc": 0.00015,
+        "steel": 0.000045,
+        "copper": 0.0000015,
+        "concrete": 0.0003,
+        "ductile_iron": 0.00015  # Hierro dúctil
     }.get(data.pipe_material.lower(), 0.0015)  # mm
     print(f"Coeficiente de rugosidad: {roughness} mm")
     
