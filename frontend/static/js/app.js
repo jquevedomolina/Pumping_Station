@@ -142,8 +142,29 @@ document.addEventListener('DOMContentLoaded', function() {
             y: data.total_head
         };
         
+        // Calcular curva del sistema
+        const systemCurveData = [];
+        const geometricHeight = data.geometric_height;
+        const maxFlow = Math.max(...curveData.map(p => p.x));
+        
+        // Generar puntos de la curva del sistema: H = H_geo + K*Q^2
+        // Donde K se calcula basándose en el punto de operación
+        const K = (data.friction_head_loss + data.minor_head_loss) / Math.pow(data.flow_rate, 2);
+        
+        for (let i = 0; i <= 20; i++) {
+            const flow = (i / 20) * maxFlow;
+            const systemHead = geometricHeight + K * Math.pow(flow, 2);
+            systemCurveData.push({
+                x: flow,
+                y: systemHead
+            });
+        }
+        
         console.log('Punto de operación:', operatingPoint);
         console.log('Datos de la curva:', curveData.slice(0, 3)); // Primeros 3 puntos
+        console.log('Altura geométrica:', geometricHeight);
+        console.log('Coeficiente K del sistema:', K);
+        console.log('Datos de la curva del sistema:', systemCurveData.slice(0, 3)); // Primeros 3 puntos
         
         window.pumpChart = new Chart(ctx, {
             type: 'line',
@@ -158,6 +179,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     tension: 0.4,
                     pointRadius: 0,
                     pointHoverRadius: 6
+                }, {
+                    label: 'Curva del Sistema',
+                    data: systemCurveData,
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    borderDash: [5, 5]
                 }, {
                     label: 'Punto de Operación',
                     data: [operatingPoint],

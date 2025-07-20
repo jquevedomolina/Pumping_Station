@@ -27,8 +27,8 @@ app.add_middleware(
 )
 
 # Configurar archivos estáticos y templates
-app.mount("/static", StaticFiles(directory="../frontend/static"), name="static")
-templates = Jinja2Templates(directory="../frontend/templates")
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+templates = Jinja2Templates(directory="frontend/templates")
 
 from typing import Optional
 
@@ -198,6 +198,7 @@ def calculate_pumping_station(data: PumpingStationInput):
     # Resultados
     return {
         "total_head": round(total_head, 2),
+        "geometric_height": round(geometric_height_m, 2),
         "friction_head_loss": round(head_loss_friction, 2),
         "minor_head_loss": round(head_loss_minor, 2),
         "power_kw": round(power_kw, 4) if power_kw < 1 else round(power_kw, 2),  # Más decimales para valores pequeños
@@ -206,6 +207,7 @@ def calculate_pumping_station(data: PumpingStationInput):
         "reynolds": round(reynolds, 2),
         "friction_factor": round(friction_factor, 6),
         "flow_rate": round(flow_rate_m3s * 1000, 1),  # Caudal en l/s para el punto de operación
+        "flow_rate_m3s": round(flow_rate_m3s, 6),  # Caudal en m3/s para cálculos
         "pump_curve": curve_points,
         "bep_flow_ls": round(bep_flow_m3s * 1000, 1),
         # La ecuación debe usar Q en l/s, por lo que el coeficiente B debe ser ajustado (dividido por 1000^2)
@@ -355,7 +357,7 @@ async def generate_report(data: PumpingStationInput):
         # Generate Professional PDF using ReportLab
         try:
             from reportlab.lib.pagesizes import legal
-            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, PageBreak
+            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, PageBreak, BaseDocTemplate, PageTemplate, Frame
             from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
             from reportlab.lib.units import inch, mm
             from reportlab.lib import colors
@@ -364,15 +366,85 @@ async def generate_report(data: PumpingStationInput):
             import os
             
             buffer = io.BytesIO()
-            doc = SimpleDocTemplate(
-                buffer, 
-                pagesize=legal, 
-                rightMargin=50, 
+            
+            # Create custom document with header and footer
+            class HeaderFooterDocTemplate(BaseDocTemplate):
+                def __init__(self, filename, **kwargs):
+                    BaseDocTemplate.__init__(self, filename, **kwargs)
+                    
+                def build_header_footer(self, canvas, doc):
+                    # Header
+                    canvas.saveState()
+                    
+                    # Company name - left aligned with blue line
+                    canvas.setFont('Helvetica-Bold', 20)
+                    canvas.setFillColor(colors.HexColor('#1B2951'))
+                    company_name = 'VMS HYDRAULICS, S.A.'
+                    canvas.drawString(50, legal[1] - 50, company_name)
+                    
+                    # Tagline - left aligned below company name
+                    canvas.setFont('Helvetica-Oblique', 12)
+                    canvas.setFillColor(colors.HexColor('#666666'))
+                    tagline = 'Válvulas, mediciones y soluciones hidráulicas'
+                    canvas.drawString(50, legal[1] - 70, tagline)
+                    
+                    # Date and version info - right aligned
+                    canvas.setFont('Helvetica', 10)
+                    canvas.setFillColor(colors.HexColor('#666666'))
+                    current_date = datetime.now().strftime("%d/%m/%Y")
+                    canvas.drawRightString(legal[0] - 50, legal[1] - 50, current_date)
+                    canvas.drawRightString(legal[0] - 50, legal[1] - 65, 'Sistema v2.0 Pro')
+                    
+                    # Header line - full width
+                    canvas.setStrokeColor(colors.HexColor('#00BFFF'))
+                    canvas.setLineWidth(3)
+                    canvas.line(50, legal[1] - 85, legal[0] - 50, legal[1] - 85)
+                    
+                    # Footer
+                    footer_y = 40
+                    
+                    # Footer line
+                    canvas.setStrokeColor(colors.HexColor('#BDC3C7'))
+                    canvas.setLineWidth(1)
+                    canvas.line(50, footer_y + 25, legal[0] - 50, footer_y + 25)
+                    
+                    # Footer text
+                    canvas.setFont('Helvetica-Bold', 8)
+                    canvas.setFillColor(colors.HexColor('#7F8C8D'))
+                    canvas.drawString(50, footer_y + 10, 'VMS HYDRAULICS, S.A. - Válvulas, mediciones y soluciones hidráulicas')
+                    
+                    canvas.setFont('Helvetica', 8)
+                    canvas.drawString(50, footer_y - 2, f'Reporte generado el {datetime.now().strftime("%d/%m/%Y")} | Sistema de Cálculo Hidráulico v2.0 Pro')
+                    canvas.drawString(50, footer_y - 14, 'Este reporte ha sido generado automáticamente y debe ser revisado por un ingeniero calificado.')
+                    
+                    canvas.setFont('Helvetica-Oblique', 8)
+                    canvas.drawString(50, footer_y - 26, 'Certificado ISO 9001 - Calidad garantizada en soluciones hidráulicas')
+                    
+                    # Page number
+                    canvas.setFont('Helvetica', 8)
+                    canvas.drawRightString(legal[0] - 50, footer_y + 10, f'Página {doc.page}')
+                    
+                    canvas.restoreState()
+            
+            # Create document with custom template
+            doc = HeaderFooterDocTemplate(
+                buffer,
+                pagesize=legal,
+                rightMargin=50,
                 leftMargin=50,
-                topMargin=50, 
-                bottomMargin=50,
-                title="Reporte Técnico - VMS HYDRAULICS"
+                topMargin=120,  # Increased to accommodate header
+                bottomMargin=80  # Increased to accommodate footer
             )
+            
+            # Create frame for content
+            frame = Frame(
+                50, 80, legal[0] - 100, legal[1] - 200,
+                leftPadding=0, bottomPadding=0, rightPadding=0, topPadding=0
+            )
+            
+            # Create page template
+            template = PageTemplate(id='normal', frames=frame, onPage=doc.build_header_footer)
+            doc.addPageTemplates([template])
             
             # Custom styles
             styles = getSampleStyleSheet()
@@ -444,42 +516,6 @@ async def generate_report(data: PumpingStationInput):
             
             # Build PDF content
             story = []
-            
-            # Professional header section
-            story.append(Spacer(1, 15))
-            
-            # Enhanced company header with professional styling
-            header_table_data = [
-                ['VMS HYDRAULICS, S.A.', current_date],
-                ['Válvulas, mediciones y soluciones hidráulicas', 'Sistema v2.0 Pro']
-            ]
-            
-            header_table = Table(header_table_data, colWidths=[4.5*inch, 2.5*inch])
-            header_table.setStyle(TableStyle([
-                ('FONTNAME', (0, 0), (0, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (0, 0), 18),
-                ('TEXTCOLOR', (0, 0), (0, 0), colors.HexColor('#1B2951')),
-                ('FONTNAME', (0, 1), (0, 1), 'Helvetica-Oblique'),
-                ('FONTSIZE', (0, 1), (0, 1), 10),
-                ('TEXTCOLOR', (0, 1), (0, 1), colors.HexColor('#666666')),
-                ('FONTNAME', (1, 0), (1, 1), 'Helvetica'),
-                ('FONTSIZE', (1, 0), (1, 1), 10),
-                ('TEXTCOLOR', (1, 0), (1, 1), colors.HexColor('#666666')),
-                ('ALIGN', (0, 0), (0, 1), 'LEFT'),
-                ('ALIGN', (1, 0), (1, 1), 'RIGHT'),
-                ('VALIGN', (0, 0), (1, 1), 'TOP'),
-                ('LEFTPADDING', (0, 0), (1, 1), 0),
-                ('RIGHTPADDING', (0, 0), (1, 1), 0),
-                ('TOPPADDING', (0, 0), (1, 1), 0),
-                ('BOTTOMPADDING', (0, 0), (1, 1), 5)
-            ]))
-            
-            story.append(header_table)
-            story.append(Spacer(1, 15))
-            
-            # Professional decorative line
-            story.append(HRFlowable(width="100%", thickness=3, color=colors.HexColor('#00BFFF')))
-            story.append(Spacer(1, 25))
             
             # Enhanced report title
             story.append(Paragraph("REPORTE TÉCNICO DE ESTACIÓN DE BOMBEO", title_style))
@@ -600,7 +636,11 @@ async def generate_report(data: PumpingStationInput):
             story.append(results_table)
             story.append(Spacer(1, 20))
             
-            # Power requirements - highlighted section
+            # Insert page break to move next section to page 2
+            from reportlab.platypus import PageBreak
+            story.append(PageBreak())
+            
+            # Power requirements - highlighted section (now on page 2)
             story.append(Paragraph("2.1 Requerimientos de Potencia", subsection_style))
             
             power_data = [
@@ -698,26 +738,7 @@ async def generate_report(data: PumpingStationInput):
             story.append(Paragraph(notes_text, normal_style))
             story.append(Spacer(1, 30))
             
-            # Footer
-            story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#BDC3C7')))
-            story.append(Spacer(1, 10))
-            
-            footer_text = f"""
-            <b>VMS HYDRAULICS, S.A.</b> - Válvulas, mediciones y soluciones hidráulicas<br/>
-            Reporte generado el {current_date} | Sistema de Cálculo Hidráulico v2.0 Pro<br/>
-            Este reporte ha sido generado automáticamente y debe ser revisado por un ingeniero calificado.<br/>
-            <i>Certificado ISO 9001 - Calidad garantizada en soluciones hidráulicas</i>
-            """
-            
-            footer_style = ParagraphStyle(
-                'Footer',
-                parent=styles['Normal'],
-                fontSize=8,
-                textColor=colors.HexColor('#7F8C8D'),
-                alignment=TA_CENTER
-            )
-            
-            story.append(Paragraph(footer_text, footer_style))
+
             
             # Build PDF
             doc.build(story)
@@ -737,4 +758,4 @@ async def generate_report(data: PumpingStationInput):
         )
     except Exception as e:
         print(f"Error en generación de reporte: {str(e)}")
-        return {"error": str(e)}
+        return {"error": f"Error generando reporte: {str(e)}"}
