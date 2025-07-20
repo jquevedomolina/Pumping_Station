@@ -1,0 +1,318 @@
+/* Modern Pumping Station Calculator Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    --light-bg: #f8fafc;
+    --card-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    --hover-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    --border-radius: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--light-bg);
+    color: #2d3748;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+.modern-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.modern-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+}
+
+.modern-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.modern-subtitle {
+    font-size: 1.2rem;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.modern-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: var(--transition);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.modern-card:hover {
+    box-shadow: var(--hover-shadow);
+    transform: translateY(-2px);
+}
+
+.modern-form-section {
+    margin-bottom: 1.5rem;
+}
+
+.modern-section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modern-section-title::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    background: var(--primary-gradient);
+    border-radius: 2px;
+}
+
+.modern-input-group {
+    margin-bottom: 1rem;
+}
+
+.modern-label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+}
+
+.modern-input, .modern-select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background: white;
+    font-family: inherit;
+    height: 38px;
+}
+
+.modern-input:focus, .modern-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+.modern-input-group-addon {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.modern-input-group-addon .modern-input {
+    flex: 3;
+    min-width: 0;
+}
+
+.modern-input-group-addon .modern-select {
+    flex: 1;
+    min-width: 80px;
+    max-width: 100px;
+}
+
+.modern-accessories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.modern-accessory-item {
+    background: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.modern-accessory-item:hover {
+    border-color: #e5e7eb;
+    background: white;
+}
+
+.modern-btn {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+.modern-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.modern-btn:active {
+    transform: translateY(0);
+}
+
+.modern-results {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 0;
+}
+
+.modern-results-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.modern-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.modern-result-item {
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: var(--transition);
+}
+
+.modern-result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.modern-result-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.modern-result-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.modern-chart-container {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    margin-top: 2rem;
+}
+
+.modern-chart-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.modern-equation {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modern-container {
+        padding: 1rem;
+    }
+    
+    .modern-title {
+        font-size: 2.2rem;
+    }
+    
+    .modern-card {
+        padding: 1.5rem;
+    }
+    
+    .modern-accessories-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modern-results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Loading Animation */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading .modern-btn {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Smooth Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modern-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.modern-result-item {
+    animation: fadeInUp 0.6s ease-out;
+}
