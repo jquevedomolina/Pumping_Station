@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  pumping-station:
+    build: .
+    container_name: pumping-station
+    ports:
+      - "8001:8000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    # Para desarrollo, puedes descomentar la siguiente línea para que se reinicie automáticamente
+    # al hacer cambios en el código:
+    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload

@@ -28,7 +28,20 @@ app.add_middleware(
 
 # Configurar archivos estáticos y templates
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+app.mount("/image", StaticFiles(directory="frontend/image"), name="image")
+
 templates = Jinja2Templates(directory="frontend/templates")
+
+# Configurar el favicon
+from fastapi.responses import FileResponse
+from pathlib import Path
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    favicon_path = Path("frontend/image/favicon.png")
+    if not favicon_path.exists():
+        favicon_path = Path("frontend/static/favicon.ico")
+    return FileResponse(favicon_path)
 
 from typing import Optional
 
